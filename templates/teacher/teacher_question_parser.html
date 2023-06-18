@@ -1,0 +1,43 @@
+{% extends 'teacher/teacherbase.html' %}
+{% load widget_tweaks %}
+{% block content %}
+<head>
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/3.4.1/css/bootstrap.min.css">
+    <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.5.1/jquery.min.js"></script>
+    <script src="https://maxcdn.bootstrapcdn.com/bootstrap/3.4.1/js/bootstrap.min.js"></script>
+  <style>
+       <meta name="viewport" content="width=device-width, initial-scale=1">
+  <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/3.4.1/css/bootstrap.min.css">
+  <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.5.1/jquery.min.js"></script>
+  <script src="https://maxcdn.bootstrapcdn.com/bootstrap/3.4.1/js/bootstrap.min.js"></script>
+  a:link {
+        text-decoration: none;
+      }
+    
+  </style>
+</head>
+<body>
+    <h2 style="text-align:center; ">Question Parser</h2>
+    <form method="post" enctype="multipart/form-data"  style="margin:100px;margin-top: 0px;>
+        {% csrf_token %}
+        <input type="file" name="pdf_file" accept=".pdf" required />
+        <br>
+        <label for="start_page">Start Page:</label>
+        <input type="number" name="start_page" min="1" value="1" required />
+        <br>
+        <label for="end_page">End Page:</label>
+        <input type="number" name="end_page" min="1" value="1" required />
+        <br>
+        <br>
+        <button type="submit" class="btn btn-success" style="border-radius: 0%;">Convert to JSON Format</button>
+    </form>
+
+    {% if json_response %}
+        <h2>JSON Output:</h2>
+        <pre>{{ json_response }}</pre>
+    {% endif %}
+
+    <!-- Add any additional HTML elements or JavaScript scripts here -->
+</body>
+{% endblock content %}
