@@ -131,13 +131,15 @@ def remove_question_view(request,pk):
 @user_passes_test(is_teacher)
 def teacher_question_parser(request):
     if request.method == "GET":
-        return render(request, "teacher/teacher_question_parser.html")
-
+        courses = QMODEL.Course.objects.all()  # Retrieve all courses
+        context = {'courses': courses}
+        return render(request, "teacher/teacher_question_parser.html", context)
     if request.method == "POST":
         pdf_file = request.FILES.get("pdf_file")
         start_page = int(request.POST.get("start_page"))
         end_page = int(request.POST.get("end_page"))
-
+        course_id= request.POST.get("courseID")
+        course = QMODEL.Course.objects.get(id=course_id)
         # Save the uploaded PDF to a temporary file
         with tempfile.NamedTemporaryFile(delete=False) as temp_file:
             for chunk in pdf_file.chunks():
@@ -149,4 +151,25 @@ def teacher_question_parser(request):
         response = ""
         combined_text = "\n".join(converted_texts)
         response = get_response(combined_text + "Given above are mcq questions. Return them in json format as an array of {question_num: question: option_a: option_b: option_c: option_d: answer: }, leave answer as blank if not given, dont makeup an answer")
-        return JsonResponse(json.loads(response), safe=False)
+        questions = json.loads(response)
+            
+        for question_data in questions:
+            question_text = question_data['question']
+            option_a = question_data['option_a']
+            option_b = question_data['option_b']
+            option_c = question_data['option_c']
+            option_d = question_data['option_d']
+            answer = question_data['answer']
+            
+            question = QMODEL.Question(
+                course=course,
+                question=question_text,
+                option1=option_a,
+                option2=option_b,
+                option3=option_c,
+                option4=option_d,
+                answer=answer,
+                marks=1
+            )
+            question.save()
+        return HttpResponseRedirect('/teacher/see-question/' + course_id)

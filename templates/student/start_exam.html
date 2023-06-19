@@ -107,13 +107,56 @@
       clearInterval(countdownInterval); // Stop the countdown
       submitForm(); // Submit the form
     }
-    function submitForm() {
-      var form = document.getElementById("form");
-      form.submit();
+  }
+  function submitForm() {
+    var form = document.getElementById("form");
+    form.submit();
+  }
+  //OFFENSE COUNTING SECTION
+  var offenses = 0; // Initialize offenses counter
+
+  // Increment the offenses counter for tab switching
+  document.addEventListener("visibilitychange", function () {
+    offenses++;
+    showAlert("Switch Tabs", offenses);
+    checkOffenses();
+  });
+  // Increment the offenses counter for right-clicking
+  document.addEventListener("contextmenu", function (event) {
+    event.preventDefault(); // Prevent the default context menu
+    offenses++;
+    showAlert("Right click", offenses);
+    checkOffenses();
+  });
+
+  // Increment the offenses counter for Ctrl+C
+  document.addEventListener("keydown", function (event) {
+    if (event.ctrlKey && event.key === "c") {
+      offenses++;
+      showAlert("Copy (Ctrl+C)", offenses);
+      checkOffenses();
+    }
+  });
+
+  function showAlert(offenseName, offenses) {
+    remainingOffenses= 10-offenses
+    var message =
+      "Oops! You are not allowed to " +
+      offenseName +
+      ". Repeated behaviour may cause your exam session to get terminated";
+    alert(message);
+  }
+
+  function checkOffenses() {
+    if (offenses >= 10) {
+      clearInterval(countdownInterval); // Stop the countdown
+      submitForm(); // Submit the form
     }
   }
 
-</script> 
+
+</script>
+
 
 <br><br><br><br><br><br>
 {% endblock content %}

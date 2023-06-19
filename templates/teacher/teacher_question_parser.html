@@ -21,6 +21,11 @@
     <h2 style="text-align:center; ">Question Parser</h2>
     <form method="post" enctype="multipart/form-data"  style="margin:100px;margin-top: 0px;>
         {% csrf_token %}
+        <select name="courseID" required>
+            {% for course in courses %}
+                <option value="{{ course.id }}">{{ course.course_name }}</option>
+            {% endfor %}
+        </select>
         <input type="file" name="pdf_file" accept=".pdf" required />
         <br>
         <label for="start_page">Start Page:</label>
@@ -32,11 +37,6 @@
         <br>
         <button type="submit" class="btn btn-success" style="border-radius: 0%;">Convert to JSON Format</button>
     </form>
-
-    {% if json_response %}
-        <h2>JSON Output:</h2>
-        <pre>{{ json_response }}</pre>
-    {% endif %}
 
     <!-- Add any additional HTML elements or JavaScript scripts here -->
 </body>
